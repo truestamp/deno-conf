@@ -7,7 +7,9 @@ Simple config handling for your app or module
 ```ts
 import Conf from "https://deno.land/x/conf/mod.ts";
 
-const config = new Conf();
+const config = new Conf({
+    projectName: "test"
+});
 
 config.set("unicorn", "🦄");
 console.log(config.get("unicorn"));
