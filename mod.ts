@@ -3,7 +3,7 @@ import {
   dirname as pathDirname,
 } from "https://deno.land/std/path/mod.ts";
 
-import envPaths from "https://raw.githubusercontent.com/lemarier/deno-env-paths/master/mod.ts";
+import envPaths from "https://deno.land/x/env_paths/mod.ts";
 
 const defaultSuffix = "deno";
 const plainObject = () => Object.create(null);

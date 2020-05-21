@@ -5,7 +5,7 @@ Simple config handling for your app or module
 [![Test CI](https://github.com/lemarier/deno-conf/workflows/Test%20CI/badge.svg)](https://github.com//lemarier/deno-conf/actions)
 
 ```ts
-import Conf from "https://raw.githubusercontent.com/lemarier/deno-conf/master/mod.ts";
+import Conf from "https://deno.land/x/conf/mod.ts";
 
 const config = new Conf();
 
