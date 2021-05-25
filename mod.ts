@@ -1,9 +1,9 @@
 import {
-  resolve as pathResolve,
   dirname as pathDirname,
-} from "https://deno.land/std/path/mod.ts";
+  resolve as pathResolve,
+} from "https://deno.land/std@0.97.0/path/mod.ts";
 
-import envPaths from "https://deno.land/x/env_paths/mod.ts";
+import envPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths/main/mod.ts";
 
 const defaultSuffix = "deno";
 const plainObject = () => Object.create(null);
@@ -75,11 +75,7 @@ export default class Config {
         );
       }
 
-      this._options.cwd = envPaths(
-        this._options.projectName,
-        { suffix: this._options.projectSuffix || defaultSuffix },
-      )
-        .config;
+      this._options.cwd = envPaths(this._options.projectName).config;
     }
 
     // Did we provided default value for our configs?
