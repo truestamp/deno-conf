@@ -23,11 +23,7 @@ interface ConfigParameters {
 }
 
 const checkValueType = (key: string, value: any) => {
-  const nonJsonTypes = [
-    "undefined",
-    "symbol",
-    "function",
-  ];
+  const nonJsonTypes = ["undefined", "symbol", "function"];
 
   const type = typeof value;
 
