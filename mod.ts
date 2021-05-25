@@ -7,7 +7,6 @@ import envPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths
 
 const defaultSuffix = "deno";
 const plainObject = () => Object.create(null);
-const encryptionAlgorithm = "aes-256-cbc";
 const INTERNAL_KEY = "__internal__";
 
 interface ConfigParameters {
@@ -21,7 +20,6 @@ interface ConfigParameters {
   accessPropertiesByDotNotation?: boolean;
   cwd?: string;
   defaults?: {} | null;
-  encryptionKey?: string | null;
 }
 
 const checkValueType = (key: string, value: any) => {
@@ -51,12 +49,10 @@ export default class Config {
     deserialize: JSON.parse,
     accessPropertiesByDotNotation: false,
     defaults: null,
-    encryptionKey: null,
   };
 
   defaultValues: Record<string, any> = {};
 
-  encryptionKey: ConfigParameters["encryptionKey"] = null;
   serialize: Function;
   deserialize: Function;
   path: string;
@@ -96,7 +92,6 @@ export default class Config {
       );
     }
 
-    this.encryptionKey = this._options.encryptionKey;
     this.serialize = this._options.serialize;
     this.deserialize = this._options.deserialize;
 
