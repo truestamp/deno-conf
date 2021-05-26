@@ -53,13 +53,21 @@ Deno.test("instantiate class with projectName", () => {
   cleanupTestConf(conf);
 });
 
-Deno.test("instantiate class with no projectName throws", () => {
+Deno.test("instantiate class with projectName with spaces should be trimmed", () => {
+  const randomProjectName = genTestConfRandomName();
+  const conf = genTestConf({ projectName: " " + randomProjectName + " " });
+  assertEquals(conf.options.projectName, randomProjectName);
+
+  cleanupTestConf(conf);
+});
+
+Deno.test("instantiate class with empty projectName throws", () => {
   assertThrows(
     () => {
-      genTestConf({ projectName: null });
+      genTestConf({ projectName: " " });
     },
     Error,
-    "Project name could not be inferred. Please specify the `projectName` option.",
+    "the projectName option must be provided and non-empty",
   );
 });
 
@@ -67,14 +75,6 @@ Deno.test("instantiate class with configName", () => {
   const conf = genTestConf({
     projectName,
     configName: genTestConfRandomName(),
-  });
-  cleanupTestConf(conf);
-});
-
-Deno.test("instantiate class with empty cwd", () => {
-  const conf = genTestConf({
-    projectName,
-    cwd: "",
   });
   cleanupTestConf(conf);
 });

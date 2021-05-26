@@ -9,11 +9,10 @@ const plainObject = () => Object.create(null);
 const INTERNAL_KEY = "__internal__";
 
 export interface ConfigParameters {
-  projectName: string | null;
+  projectName: string;
   configName?: string;
   fileExtension?: string;
   clearInvalidConfig?: boolean;
-  cwd?: string;
   defaults?: Record<string, unknown> | null;
 }
 
@@ -31,7 +30,7 @@ const checkValueType = (key: string, value: any) => {
 
 export default class Config {
   private _options: ConfigParameters = {
-    projectName: null,
+    projectName: "",
     configName: "config",
     fileExtension: "json",
     clearInvalidConfig: true,
@@ -52,29 +51,24 @@ export default class Config {
       ...options,
     };
 
-    // Try to locate path's
-    if (!this._options.cwd) {
-      if (!this._options.projectName) {
-        throw new Error(
-          "Project name could not be inferred. Please specify the `projectName` option.",
-        );
-      }
-
-      this._options.cwd = envPaths(this._options.projectName).config;
-    }
-
     // Did we provided default value for our configs?
     if (this._options.defaults) {
       this.defaultValues = this._options.defaults;
     }
 
-    const fileExtension = this._options.fileExtension
+    const dottedfileExtension = this._options.fileExtension
       ? `.${this._options.fileExtension}`
       : "";
 
+    if (!this._options.projectName || this._options.projectName.trim() === "") {
+      throw new Error("the projectName option must be provided and non-empty");
+    }
+
+    this._options.projectName = this._options.projectName.trim();
+
     this.path = pathResolve(
-      this._options.cwd,
-      `${this._options.configName}${fileExtension}`,
+      envPaths(this._options.projectName).config,
+      `${this._options.configName}${dottedfileExtension}`,
     );
   }
 

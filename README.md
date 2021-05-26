@@ -32,11 +32,12 @@ Returns a new instance.
 
 Type: `object`
 
-#### defaults
+#### projectName
 
-Type: `object`
+Type: `string`\
+\*Required
 
-Default values for the config items.
+The `projectName` is a required config parameter and must be a non-empty `string`. Any leading or trailing whitespace will be removed.
 
 #### configName
 
@@ -47,22 +48,6 @@ Name of the config file (without extension).
 
 Useful if you need multiple config files for your app or module. For example, different config files between two major versions.
 
-#### projectName
-
-Type: `string`\
-\*Required
-
-#### cwd
-
-Type: `string`\
-Default: System default [user config directory](https://github.com/lemarier/deno-env-paths#pathsconfig)
-
-**You most likely don't need this. Please don't use it unless you really have to. By default, it will pick the optimal location by adhering to system conventions. You are very likely to get this wrong and annoy users.**
-
-Overrides `projectName`.
-
-The only use-case I can think of is having the config located in the app directory or on some external storage.
-
 #### fileExtension
 
 Type: `string`\
@@ -71,6 +56,13 @@ Default: `'json'`
 Extension of the config file.
 
 You would usually not need this, but could be useful if you want to interact with a file with a custom file extension that can be associated with your app. These might be simple save/export/preference files that are intended to be shareable or saved outside of the app.
+
+#### defaults
+
+Type: `object`\
+Default: `null`
+
+Default values for the config items. If provided, and if `reset` is called, the config store will be reset to this object's values.
 
 #### clearInvalidConfig
 
