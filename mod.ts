@@ -8,7 +8,7 @@ import envPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths
 const plainObject = () => Object.create(null);
 const INTERNAL_KEY = "__internal__";
 
-interface ConfigParameters {
+export interface ConfigParameters {
   projectName: string | null;
   configName?: string;
   fileExtension?: string;
