@@ -13,8 +13,6 @@ export interface ConfigParameters {
   configName?: string;
   fileExtension?: string;
   clearInvalidConfig?: boolean;
-  serialize?: (value: string) => string;
-  deserialize?: (text: string) => Record<string, unknown>;
   cwd?: string;
   defaults?: Record<string, unknown> | null;
 }
@@ -37,15 +35,15 @@ export default class Config {
     configName: "config",
     fileExtension: "json",
     clearInvalidConfig: true,
-    serialize: (value: string) => JSON.stringify(value, null, "\t"),
-    deserialize: JSON.parse,
     defaults: null,
   };
 
   defaultValues: Record<string, unknown> = {};
 
-  serialize: (value: string) => string;
-  deserialize: (text: string) => Record<string, unknown>;
+  serialize: (value: string) => string = (value: string) =>
+    JSON.stringify(value, null, 2);
+  deserialize: (text: string) => Record<string, unknown> = JSON.parse;
+
   path: string;
 
   constructor(options: ConfigParameters) {
@@ -69,22 +67,6 @@ export default class Config {
     if (this._options.defaults) {
       this.defaultValues = this._options.defaults;
     }
-
-    // make sure we have serializer
-    if (!this._options.serialize) {
-      throw new Error(
-        "Invalid serializer. Please specify the `serialize` option.",
-      );
-    }
-
-    if (!this._options.deserialize) {
-      throw new Error(
-        "Invalid deserializer. Please specify the `deserialize` option.",
-      );
-    }
-
-    this.serialize = this._options.serialize;
-    this.deserialize = this._options.deserialize;
 
     const fileExtension = this._options.fileExtension
       ? `.${this._options.fileExtension}`

@@ -79,24 +79,6 @@ Default: `true`
 
 The config is cleared if reading the config file causes a `SyntaxError`. This is a good default, as the config file is not intended to be hand-edited, so it usually means the config is corrupt and there's nothing the user can do about it anyway. However, if you let the user edit the config file directly, mistakes might happen and it could be more useful to throw an error when the config is invalid instead of clearing. Disabling this option will make it throw a `SyntaxError` on invalid config instead of clearing.
 
-#### serialize
-
-Type: `Function`\
-Default: `value => JSON.stringify(value, null, '\t')`
-
-Function to serialize the config object to a UTF-8 string when writing the config file.
-
-You would usually not need this, but it could be useful if you want to use a format other than JSON.
-
-#### deserialize
-
-Type: `Function`\
-Default: `JSON.parse`
-
-Function to deserialize the config object from a UTF-8 string when reading the config file.
-
-You would usually not need this, but it could be useful if you want to use a format other than JSON.
-
 ### Instance
 
 The instance is [`iterable`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Iteration_protocols) so you can use it directly in a [`for…of`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/for...of) loop.

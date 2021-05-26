@@ -95,22 +95,6 @@ Deno.test("instantiate class with clearInvalidConfig", () => {
   cleanupTestConf(conf);
 });
 
-Deno.test("instantiate class with serialize", () => {
-  const conf = genTestConf({
-    projectName,
-    serialize: (_: any) => "foo",
-  });
-  cleanupTestConf(conf);
-});
-
-Deno.test("instantiate class with deserialize", () => {
-  const conf = genTestConf({
-    projectName,
-    deserialize: (_: string) => ({ foo: "foo", unicorn: true }),
-  });
-  cleanupTestConf(conf);
-});
-
 Deno.test("set all value types", () => {
   const conf = genTestConf();
 
