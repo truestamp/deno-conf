@@ -81,7 +81,7 @@ export default class Config {
 
     if (!this._options.deserialize) {
       throw new Error(
-        "Invalid serializer. Please specify the `deserialize` option.",
+        "Invalid deserializer. Please specify the `deserialize` option.",
       );
     }
 
@@ -218,7 +218,7 @@ export default class Config {
 
     if (this._containsReservedKey(key)) {
       throw new TypeError(
-        `Please don't use the ${INTERNAL_KEY} key, as it's used to manage this module internal operations.`,
+        `Please don't use the '${INTERNAL_KEY}' key, as it's used to manage this module's internal operations.`,
       );
     }
 

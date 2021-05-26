@@ -5,18 +5,18 @@ Simple config handling for your app or module
 [![Test CI](https://github.com/lemarier/deno-conf/workflows/Test%20CI/badge.svg)](https://github.com//lemarier/deno-conf/actions)
 
 ```ts
-import Conf from "https://deno.land/x/conf/mod.ts";
+import Conf from "https://deno.land/x/conf/mod.ts"
 
 const config = new Conf({
-    projectName: "test"
-});
+  projectName: "test",
+})
 
-config.set("unicorn", "🦄");
-console.log(config.get("unicorn"));
+config.set("unicorn", "🦄")
+console.log(config.get("unicorn"))
 //=> '🦄'
 
-config.delete("unicorn");
-console.log(config.get("unicorn"));
+config.delete("unicorn")
+console.log(config.get("unicorn"))
 //=> undefined
 ```
 
@@ -142,7 +142,7 @@ Get all the config as an object or replace the current config with an object:
 ```js
 conf.store = {
   hello: "world",
-};
+}
 ```
 
 #### .path
