@@ -97,17 +97,6 @@ Function to deserialize the config object from a UTF-8 string when reading the c
 
 You would usually not need this, but it could be useful if you want to use a format other than JSON.
 
-#### projectSuffix
-
-Type: `string`\
-Default: `'deno'`
-
-**You most likely don't need this. Please don't use it unless you really have to.**
-
-Suffix appended to `projectName` during config file creation to avoid name conflicts with native apps.
-
-For example, on macOS, the config file will be stored in the `~/Library/Preferences/foo-deno` directory, where `foo` is the `projectName`.
-
 ### Instance
 
 The instance is [`iterable`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Iteration_protocols) so you can use it directly in a [`for…of`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/for...of) loop.

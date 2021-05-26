@@ -5,7 +5,6 @@ import {
 
 import envPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths/main/mod.ts";
 
-const defaultSuffix = "deno";
 const plainObject = () => Object.create(null);
 const INTERNAL_KEY = "__internal__";
 
@@ -13,7 +12,6 @@ interface ConfigParameters {
   projectName: string | null;
   configName?: string;
   fileExtension?: string;
-  projectSuffix?: string;
   clearInvalidConfig?: boolean;
   serialize?: Function;
   deserialize?: Function;
@@ -39,7 +37,6 @@ export default class Config {
     projectName: null,
     configName: "config",
     fileExtension: "json",
-    projectSuffix: defaultSuffix,
     clearInvalidConfig: true,
     serialize: (value: string) => JSON.stringify(value, null, "\t"),
     deserialize: JSON.parse,
