@@ -13,11 +13,11 @@ interface ConfigParameters {
   configName?: string;
   fileExtension?: string;
   clearInvalidConfig?: boolean;
-  serialize?: Function;
-  deserialize?: Function;
+  serialize?: (value: string) => string;
+  deserialize?: (text: string) => Record<string, unknown>;
   accessPropertiesByDotNotation?: boolean;
   cwd?: string;
-  defaults?: {} | null;
+  defaults?: Record<string, unknown> | null;
 }
 
 const checkValueType = (key: string, value: any) => {
@@ -44,10 +44,10 @@ export default class Config {
     defaults: null,
   };
 
-  defaultValues: Record<string, any> = {};
+  defaultValues: Record<string, unknown> = {};
 
-  serialize: Function;
-  deserialize: Function;
+  serialize: (value: string) => string;
+  deserialize: (text: string) => Record<string, unknown>;
   path: string;
 
   constructor(options: ConfigParameters) {

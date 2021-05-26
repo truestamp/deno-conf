@@ -2,7 +2,7 @@ import { assertEquals } from "https://deno.land/std@0.97.0/testing/asserts.ts";
 
 import Conf from "./mod.ts";
 
-const projectName: string = "test";
+const projectName = "test";
 
 // Make sure the class works fine
 new Conf({ projectName, configName: "test" });
