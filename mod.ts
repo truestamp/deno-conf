@@ -15,7 +15,6 @@ interface ConfigParameters {
   clearInvalidConfig?: boolean;
   serialize?: (value: string) => string;
   deserialize?: (text: string) => Record<string, unknown>;
-  accessPropertiesByDotNotation?: boolean;
   cwd?: string;
   defaults?: Record<string, unknown> | null;
 }
@@ -40,7 +39,6 @@ export default class Config {
     clearInvalidConfig: true,
     serialize: (value: string) => JSON.stringify(value, null, "\t"),
     deserialize: JSON.parse,
-    accessPropertiesByDotNotation: false,
     defaults: null,
   };
 
@@ -127,22 +125,10 @@ export default class Config {
       return false;
     }
 
-    if (this._options.accessPropertiesByDotNotation) {
-      if (key.startsWith(`${INTERNAL_KEY}.`)) {
-        return true;
-      }
-
-      return false;
-    }
-
     return false;
   }
 
   has(key: string) {
-    if (this._options.accessPropertiesByDotNotation) {
-      // return dotProp.has(this.store, key);
-    }
-
     return key in this.store;
   }
 
@@ -158,12 +144,7 @@ export default class Config {
 
   delete(key: string) {
     const { store } = this;
-    if (this._options.accessPropertiesByDotNotation) {
-      //dotProp.delete(store, key);
-    } else {
-      delete store[key];
-    }
-
+    delete store[key];
     this.store = store;
   }
 
@@ -226,11 +207,7 @@ export default class Config {
 
     const set = (key: string, value: any) => {
       checkValueType(key, value);
-      if (this._options.accessPropertiesByDotNotation) {
-        //dotProp.set(store, key, value);
-      } else {
-        store[key] = value;
-      }
+      store[key] = value;
     };
 
     if (typeof key === "object") {

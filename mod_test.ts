@@ -16,7 +16,6 @@ new Conf(
     deserialize: (_: string) => ({ foo: "foo", unicorn: true }),
   },
 );
-new Conf({ projectName, accessPropertiesByDotNotation: false });
 
 // Make our tests
 Deno.test("set values", () => {
