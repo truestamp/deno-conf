@@ -178,8 +178,8 @@ export default class Config {
   get store() {
     try {
       const decoder = new TextDecoder("utf-8");
-      let data = Deno.readFileSync(this.path);
-      data = this.deserialize(decoder.decode(data));
+      const dataBin = Deno.readFileSync(this.path);
+      const data = this.deserialize(decoder.decode(dataBin));
       return Object.assign(plainObject(), data);
     } catch (error) {
       // if nothing is found, return plain object
