@@ -4,11 +4,13 @@ Simple config handling for your app or module
 
 [![Test CI](https://github.com/lemarier/deno-conf/workflows/Test%20CI/badge.svg)](https://github.com//lemarier/deno-conf/actions)
 
+## Example
+
 ```ts
-import Conf from "https://deno.land/x/conf/mod.ts"
+import Conf from "https://raw.githubusercontent.com/truestamp/deno-conf/main/mod.ts"
 
 const config = new Conf({
-  projectName: "test",
+  projectName: "com.yourorg.yourapp",
 })
 
 config.set("unicorn", "🦄")
@@ -17,45 +19,62 @@ console.log(config.get("unicorn"))
 
 config.delete("unicorn")
 console.log(config.get("unicorn"))
-//=> undefined
+//=> null
 ```
 
 ## API
 
-Changes are written to disk atomically, so if the process crashes during a write, it will not corrupt the existing config.
+```ts
+class default
 
-### Conf(options?)
+  constructor(options: ConfigParameters)
+  defaultValues: Record<string, string | number | boolean | null>
+  path: string
+  has(key: string): boolean
+  reset(): void
+  resetKeys(keys: string[]): void
+  delete(key: string): void
+  clear(): void
+  get size(): number
+  get store()
+  set store(value)
+  get options(): ConfigParameters
+  get(key: string)
+  set(key: string, value: Record<string, boolean | null | number | string> | boolean | null | number | string)
+  setObject(obj: Record<string, boolean | null | number | string>)
+  *[Symbol.iterator]()
+
+interface ConfigParameters
+
+  projectName: string
+  configName?: string
+  resetInvalidConfig?: boolean
+  defaults?: Record<string, string | number | boolean | null> | null
+```
+
+### Conf(options?: ConfigParameters)
 
 Returns a new instance.
 
 ### options
 
-Type: `object`
+Type: `ConfigParameters`
 
 #### projectName
 
 Type: `string`\
 \*Required
 
-The `projectName` is a required config parameter and must be a non-empty `string`. Any leading or trailing whitespace will be removed.
+The `projectName` is a required config parameter and must be a non-empty `string`. Any leading or trailing whitespace will be automatically removed.
 
 #### configName
 
 Type: `string`\
 Default: `'config'`
 
-Name of the config file (without extension).
+Choose the name of the config file without providing the extension. The `.json` extension will automatically be appended.
 
-Useful if you need multiple config files for your app or module. For example, different config files between two major versions.
-
-#### fileExtension
-
-Type: `string`\
-Default: `'json'`
-
-Extension of the config file.
-
-You would usually not need this, but could be useful if you want to interact with a file with a custom file extension that can be associated with your app. These might be simple save/export/preference files that are intended to be shareable or saved outside of the app.
+Useful if you need multiple config files for your app or module. For example, using different config files between two major versions.
 
 #### defaults
 
@@ -64,34 +83,46 @@ Default: `null`
 
 Default values for the config items. If provided, and if `reset` is called, the config store will be reset to this object's values.
 
-#### clearInvalidConfig
+#### resetInvalidConfig
 
 Type: `boolean`\
-Default: `true`
+Default: `false`
 
-The config is cleared if reading the config file causes a `SyntaxError`. This is a good default, as the config file is not intended to be hand-edited, so it usually means the config is corrupt and there's nothing the user can do about it anyway. However, if you let the user edit the config file directly, mistakes might happen and it could be more useful to throw an error when the config is invalid instead of clearing. Disabling this option will make it throw a `SyntaxError` on invalid config instead of clearing.
+When trying to read a corrupted JSON config file a `SyntaxError` will be raised.
+
+In this situation if `resetInvalidConfig` is set to `true` then the config file will be destroyed and overwritten with a new config file that only contains the `defaults` (if they were defined).
+
+If `resetInvalidConfig` is `false` and a corrupted file is encountered then no changes will be made to the file and an error will be thrown. This is the safe default and should only be set to `true` if there is no chance of losing important data in the corrupted config.
 
 ### Instance
 
-The instance is [`iterable`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Iteration_protocols) so you can use it directly in a [`for…of`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/for...of) loop.
+The instance is [`Iterable`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Iteration_protocols) so you can use it directly in a [`for…of`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Statements/for...of) loop.
 
 #### .set(key, value)
 
 Set an item.
 
-The `value` must be JSON serializable. Trying to set the type `undefined`, `function`, or `symbol` will result in a TypeError.
+The `value` must be JSON serializable.
 
-#### .set(object)
+#### .setObject(object)
 
-Set multiple items at once.
+Set multiple items at once by passing in an object, where each key in the object will be stored in the config.
 
-#### .get(key, defaultValue?)
+#### .get(key)
 
-Get an item or `defaultValue` if the item does not exist.
+Get an item by its `key`, returning `null` if the `key` doesn't exist.
 
-#### .reset(...keys)
+#### .reset()
 
-Reset items to their default values, as defined by the `defaults` option.
+Reset **all** items that have matching defaults, as defined by the `defaults` option, to their default values.
+
+This will **DELETE** the entire configuration file if it exists and fill it only with `defaults` if they exist.
+
+#### .resetKeys(string[])
+
+Reset specific item(s) to their default values, as defined by the `defaults` option. Accepts a `string[]` of keys to reset.
+
+If there were no `defaults` defined, or the keys passed in the `string[]` don't match any existing keys then this is a no-op.
 
 #### .has(key)
 
