@@ -46,7 +46,7 @@ type ObjectType = Record<
   | string
 >;
 
-type ItemType =
+export type ItemType =
   | (boolean | null | number | ObjectType | string)[]
   | boolean
   | null
@@ -54,7 +54,7 @@ type ItemType =
   | ObjectType
   | string;
 
-type StoreType = Record<string, ItemType>;
+export type StoreType = Record<string, ItemType>;
 
 export interface ConfigParameters {
   projectName: string;
