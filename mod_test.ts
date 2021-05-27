@@ -1,6 +1,6 @@
 import {
   assertEquals,
-  assertObjectMatch,
+  assertStringIncludes,
   assertThrows,
 } from "https://deno.land/std@0.97.0/testing/asserts.ts";
 import { existsSync } from "https://deno.land/std@0.97.0/fs/exists.ts";
@@ -27,8 +27,6 @@ const genTestConf = (
   if (!confConfig.configName) {
     confConfig.configName = genTestConfRandomName();
   }
-
-  // console.log(confConfig);
 
   const conf = new Conf(confConfig);
 
@@ -104,7 +102,6 @@ Deno.test("the conf should be iterable", () => {
 
   // exercise the iterable
   for (const item of conf) {
-    // console.log(item);
     iterableSize += 1;
   }
 
@@ -134,7 +131,7 @@ Deno.test("set all value types", () => {
   assertEquals(conf.get("booleanFalse"), false);
   assertEquals(conf.get("string"), "bar");
   assertEquals(conf.get("unicorn"), "🦄");
-  assertObjectMatch(conf.get("object"), testObj);
+  assertEquals(conf.get("object"), testObj);
 
   cleanupTestConf(conf);
 });
@@ -161,7 +158,68 @@ Deno.test("set all value types as an Object", () => {
   assertEquals(conf.get("booleanFalse"), false);
   assertEquals(conf.get("stringBar"), "bar");
   assertEquals(conf.get("unicorn"), "🦄");
-  assertObjectMatch(conf.get("object"), testObj);
+  assertEquals(conf.get("object"), testObj);
+
+  cleanupTestConf(conf);
+});
+
+Deno.test("set single nested Object", () => {
+  const conf = genTestConf();
+
+  const testObjInner = {
+    onumber: 1,
+    oboolean: true,
+    ostring: "bar",
+    onull: null,
+    oarray: ["string", 1, true, false, null],
+  };
+
+  const testObjOuter = {
+    onumber: 1,
+    oboolean: true,
+    ostring: "bar",
+    nested: testObjInner,
+  };
+
+  conf.setObject({
+    object: testObjOuter,
+  });
+
+  assertEquals(conf.get("object"), testObjOuter);
+
+  cleanupTestConf(conf);
+});
+
+Deno.test("set double nested Object", () => {
+  const conf = genTestConf();
+
+  const testObjDeepInner = {
+    onumber: 1,
+    oboolean: true,
+    ostring: "bar",
+    onull: null,
+    oarray: ["string", 1, true, false, null],
+  };
+
+  const testObjInner = {
+    onumber: 1,
+    oboolean: true,
+    ostring: "bar",
+    onull: null,
+    oarray: ["string", 1, true, false, null],
+    deep: testObjDeepInner,
+  };
+
+  const testObjOuter = {
+    onumber: 1,
+    oboolean: true,
+    ostring: "bar",
+    inner: testObjInner,
+  };
+
+  conf.setObject({ object: testObjOuter });
+
+  assertEquals(conf.get("object"), testObjOuter);
 
   cleanupTestConf(conf);
 });
@@ -177,17 +235,6 @@ Deno.test("delete a value", () => {
   cleanupTestConf(conf);
 });
 
-Deno.test("clear config store", () => {
-  const conf = genTestConf();
-
-  conf.set("foo", "bar");
-  assertEquals(conf.get("foo"), "bar");
-  conf.clear();
-  assertEquals(conf.get("foo"), null);
-
-  cleanupTestConf(conf);
-});
-
 Deno.test("get size", () => {
   const conf = genTestConf();
 
@@ -198,6 +245,20 @@ Deno.test("get size", () => {
   conf.set("bar", "foo");
   assertEquals(conf.get("bar"), "foo");
   assertEquals(conf.size, 2);
+
+  cleanupTestConf(conf);
+});
+
+Deno.test("get path", () => {
+  const conf = genTestConf();
+  assertStringIncludes(conf.path, projectName);
+
+  cleanupTestConf(conf);
+});
+
+Deno.test("get dir", () => {
+  const conf = genTestConf();
+  assertStringIncludes(conf.dir, projectName);
 
   cleanupTestConf(conf);
 });
@@ -383,6 +444,32 @@ Deno.test("reading an invalid config with 'resetInvalidConfig: false' should thr
     Error,
     "Unexpected token b in JSON at position 0",
   );
+
+  cleanupTestConf(conf);
+});
+
+Deno.test("directly store an object to the store where the config dir doesn't exist", () => {
+  // change the project name to ensure we're not
+  // sharing a config dir with other running tests.
+  const conf = genTestConf({
+    projectName: projectName + "-delete-dir",
+  });
+
+  // ensure the test dir doesn't exist
+  try {
+    Deno.removeSync(conf.dir, { recursive: true });
+  } catch (error) {
+    // no-op
+  }
+
+  conf.store = { foo: "bar" };
+
+  assertEquals(conf.get("foo"), "bar");
+
+  assertEquals(existsSync(conf.path), true);
+
+  // cleanup the special test dir
+  Deno.removeSync(conf.dir, { recursive: true });
 
   cleanupTestConf(conf);
 });

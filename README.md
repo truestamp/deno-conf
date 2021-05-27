@@ -28,20 +28,70 @@ console.log(config.get("unicorn"))
 class default
 
   constructor(options: ConfigParameters)
-  defaultValues: Record<string, string | number | boolean | null>
+  defaultValues: StoreType
   path: string
-  has(key: string): boolean
-  reset(): void
-  resetKeys(keys: string[]): void
-  delete(key: string): void
-  clear(): void
   get size(): number
-  get store()
-  set store(value)
+    Get the number of config items stored.
+    @returns {number} The count of config items
+  get dir(): string
+    Get the path of the config directory.
+    @returns {string} The directory portion of the config path
+  get store(): StoreType
+    Get the contents of the config store.
+    @returns {StoreType} The config store
+  set store(data: StoreType)
+    Set the contents of the config store to an Object.
+
+    @param {StoreType} data
+    @returns {void}
   get options(): ConfigParameters
-  get(key: string)
-  set(key: string, value: Record<string, boolean | null | number | string> | boolean | null | number | string)
-  setObject(obj: Record<string, boolean | null | number | string>)
+    Get the config store parameters.
+
+    @returns {ConfigParameters}
+  has(key: string): boolean
+    Returns boolean whether `key` is present in the config store.
+
+    @param {string} key The key to search for.
+    @returns {boolean} Key exists in config store?
+  reset(): void
+    Destructively removes any existing config file and resets all
+    keys to defaults if present, writing them to a new config.
+
+    If no defaults are present no new config file will be created.
+
+    @returns {void}
+  resetKeys(keys: string[]): void
+    Destructively reset one or more keys to defaults if they exist.
+
+    If no defaults are present then this will be a no-op for all
+    provided keys.
+
+    If defaults are present then each key that matches one in defaults
+    will be overwritten with the default value.
+
+    @param {string[]} keys An Array of string keys to reset to defaults.
+    @returns {void}
+  delete(key: string): void
+    Destructively remove a single item from the config store.
+
+    @param {string} key The key to delete from the config store.
+    @returns {void}
+  get(key: string): ItemType
+    Get a single item from the config store.
+
+    @param {string} key The key to get from the config store.
+    @returns {ItemType} A single ItemType item.
+  set(key: string, value: ItemType): void
+    Set a single item into the config store.
+
+    @param {string} key The key to write to the config store.
+    @param {ItemType} value The value to write to the config store.
+    @returns {void} void.
+  setObject(data: StoreType): void
+    Set multiple items into the config store.
+
+    @param {StoreType} data The Object to write to the config store.
+    @returns {void} void.
   *[Symbol.iterator]()
 
 interface ConfigParameters
@@ -49,7 +99,7 @@ interface ConfigParameters
   projectName: string
   configName?: string
   resetInvalidConfig?: boolean
-  defaults?: Record<string, string | number | boolean | null> | null
+  defaults?: StoreType | null
 ```
 
 ### Conf(options?: ConfigParameters)
@@ -131,10 +181,6 @@ Check if an item exists.
 #### .delete(key)
 
 Delete an item.
-
-#### .clear()
-
-Delete all items.
 
 #### .size
 
