@@ -19,4 +19,4 @@ jobs:
         with:
           deno-version: 1.x
       - name: Tests
-        run: deno test --unstable -A
+        run: deno test --allow-env --allow-read --allow-write --coverage=coverage --unstable
