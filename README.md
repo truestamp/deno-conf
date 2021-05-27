@@ -156,4 +156,6 @@ Get the path to the config file.
 
 ---
 
+Forked from [deno-conf](https://github.com/lemarier/deno-conf)
+
 Inspired by [conf](https://github.com/sindresorhus/conf) from [sindresorhus](https://github.com/sindresorhus).
