@@ -473,3 +473,38 @@ Deno.test("directly store an object to the store where the config dir doesn't ex
 
   cleanupTestConf(conf);
 });
+
+Deno.test("store should return default values merged with actual values that have been set", () => {
+  const conf = genTestConf({
+    projectName,
+    defaults: { adefault: "stuff" },
+  });
+
+  conf.set("bar", "baz");
+
+  assertEquals(conf.get("adefault"), "stuff");
+  assertEquals(conf.get("bar"), "baz");
+
+  cleanupTestConf(conf);
+});
+
+Deno.test("store should return default values even if nothing else was set", () => {
+  const conf = genTestConf({
+    projectName,
+    defaults: { adefault: "stuff" },
+  });
+
+  assertEquals(conf.get("adefault"), "stuff");
+
+  cleanupTestConf(conf);
+});
+
+Deno.test("store should return empty object even if nothing else was set", () => {
+  const conf = genTestConf({
+    projectName,
+  });
+
+  assertEquals(conf.store, {});
+
+  cleanupTestConf(conf);
+});

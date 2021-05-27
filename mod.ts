@@ -117,12 +117,15 @@ export default class Config {
   }
 
   /**
-   * Get the contents of the config store.
+   * Get the contents of the config store, including defaults if present.
    * @returns {StoreType} The config store
    */
   get store(): StoreType {
     try {
-      return JSON.parse(Deno.readTextFileSync(this.path));
+      return {
+        ...this.defaultValues,
+        ...JSON.parse(Deno.readTextFileSync(this.path)),
+      };
     } catch (error) {
       switch (error.name) {
         case "SyntaxError":
@@ -130,11 +133,11 @@ export default class Config {
           // desired behavior.
           if (this._options.resetInvalidConfig) {
             this.reset();
-            return this.defaultValues;
+            return { ...this.defaultValues };
           }
           break;
         case "NotFound":
-          return plainObject();
+          return { ...this.defaultValues, ...plainObject() };
       }
 
       throw error;
