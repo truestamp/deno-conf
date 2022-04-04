@@ -3,7 +3,7 @@ import {
   resolve,
 } from "https://deno.land/std@0.133.0/path/mod.ts";
 
-import envPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths/v1.0.0/mod.ts";
+import appPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths/v1.0.1/mod.ts";
 
 const plainObject = () => Object.create(null);
 
@@ -55,7 +55,7 @@ export default class Config {
     this._options.projectName = this._options.projectName.trim();
 
     this.path = resolve(
-      envPaths(this._options.projectName).config,
+      appPaths(this._options.projectName).config,
       `${this._options.configName}.json`,
     );
   }
