@@ -3,8 +3,6 @@ import {
   resolve,
 } from "https://deno.land/std@0.133.0/path/mod.ts";
 
-import { existsSync } from "https://deno.land/std@0.97.0/fs/exists.ts";
-
 import envPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths/v1.0.0/mod.ts";
 
 const plainObject = () => Object.create(null);
@@ -151,10 +149,7 @@ export default class Config {
    * @returns {void}
    */
   set store(data: StoreType) {
-    if (!existsSync(pathDirname(this.path))) {
-      Deno.mkdirSync(pathDirname(this.path), { recursive: true });
-    }
-
+    Deno.mkdirSync(dirname(this.path), { recursive: true });
     Deno.writeTextFileSync(this.path, JSON.stringify(data, null, 2));
   }
 
@@ -188,9 +183,7 @@ export default class Config {
    * @returns {void}
    */
   reset(): void {
-    if (this.path && existsSync(this.path)) {
-      Deno.removeSync(this.path, { recursive: true });
-    }
+    Deno.removeSync(this.path, { recursive: true });
 
     // There are no default values. Just exit.
     if (Object.keys(this.defaultValues).length === 0) {
