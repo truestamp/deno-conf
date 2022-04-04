@@ -1,7 +1,7 @@
 import {
-  dirname as pathDirname,
-  resolve as pathResolve,
-} from "https://deno.land/std@0.97.0/path/mod.ts";
+  dirname,
+  resolve,
+} from "https://deno.land/std@0.133.0/path/mod.ts";
 
 import { existsSync } from "https://deno.land/std@0.97.0/fs/exists.ts";
 
@@ -92,7 +92,7 @@ export default class Config {
 
     this._options.projectName = this._options.projectName.trim();
 
-    this.path = pathResolve(
+    this.path = resolve(
       envPaths(this._options.projectName).config,
       `${this._options.configName}.json`,
     );
@@ -113,7 +113,7 @@ export default class Config {
    * @returns {string} The directory portion of the config path
    */
   get dir(): string {
-    return pathDirname(this.path);
+    return dirname(this.path);
   }
 
   /**
