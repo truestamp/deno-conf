@@ -15,7 +15,7 @@ const plainObject = () => Object.create(null);
 // the value can be of many types, including another
 // nested object. This workaround permits several levels
 // of object nesting. This is a hack that can probably be fixed
-// with some better Typescript type definition knowlege.
+// with some better Typescript type definition knowledge.
 
 type DeepNestedObjectType = Record<
   string,
