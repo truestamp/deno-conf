@@ -2,8 +2,7 @@ import {
   assertEquals,
   assertStringIncludes,
   assertThrows,
-} from "https://deno.land/std@0.97.0/testing/asserts.ts";
-import { existsSync } from "https://deno.land/std@0.97.0/fs/exists.ts";
+} from "https://deno.land/std@0.133.0/testing/asserts.ts";
 
 import Conf from "./mod.ts";
 import { ConfigParameters } from "./mod.ts";
@@ -31,8 +30,10 @@ const genTestConf = (
   const conf = new Conf(confConfig);
 
   // just in case
-  if (existsSync(conf.path)) {
+  try {
     Deno.removeSync(conf.path, { recursive: true });
+  } catch (_error) {
+    // no-op
   }
 
   return conf;
@@ -41,8 +42,10 @@ const genTestConf = (
 // IMPORTANT : Call at the end of EVERY test
 // Cleanup old conf files at the end of a test
 const cleanupTestConf = (conf: Conf) => {
-  if (conf && conf.path && existsSync(conf.path)) {
+  try {
     Deno.removeSync(conf.path, { recursive: true });
+  } catch (_error) {
+    // no-op
   }
 };
 
@@ -190,36 +193,36 @@ Deno.test("set single nested Object", () => {
   cleanupTestConf(conf);
 });
 
-Deno.test("set double nested Object", () => {
+Deno.test("set deeply nested Object", () => {
   const conf = genTestConf();
 
-  const testObjDeepInner = {
-    onumber: 1,
-    oboolean: true,
-    ostring: "bar",
-    onull: null,
-    oarray: ["string", 1, true, false, null],
-  };
+  const deeplyNestedObj = {
+    one: {
+      two: {
+        three: {
+          four: {
+            five: {
+              six: {
+                seven: {
+                  eight: {
+                    nine: {
+                      ten: {
+                        foo: "bar",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }
+  }
 
-  const testObjInner = {
-    onumber: 1,
-    oboolean: true,
-    ostring: "bar",
-    onull: null,
-    oarray: ["string", 1, true, false, null],
-    deep: testObjDeepInner,
-  };
+  conf.setObject({ object: deeplyNestedObj });
 
-  const testObjOuter = {
-    onumber: 1,
-    oboolean: true,
-    ostring: "bar",
-    inner: testObjInner,
-  };
-
-  conf.setObject({ object: testObjOuter });
-
-  assertEquals(conf.get("object"), testObjOuter);
+  assertEquals(conf.get("object"), deeplyNestedObj);
 
   cleanupTestConf(conf);
 });
@@ -458,15 +461,13 @@ Deno.test("directly store an object to the store where the config dir doesn't ex
   // ensure the test dir doesn't exist
   try {
     Deno.removeSync(conf.dir, { recursive: true });
-  } catch (error) {
+  } catch (_error) {
     // no-op
   }
 
   conf.store = { foo: "bar" };
 
   assertEquals(conf.get("foo"), "bar");
-
-  assertEquals(existsSync(conf.path), true);
 
   // cleanup the special test dir
   Deno.removeSync(conf.dir, { recursive: true });

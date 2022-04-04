@@ -7,52 +7,16 @@ import envPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths
 
 const plainObject = () => Object.create(null);
 
-// We don't know what key names the user will want,
-// but we do know what types are safe for conversion to JSON.
-// The hardest part is defining the nested objects where
-// the value can be of many types, including another
-// nested object. This workaround permits several levels
-// of object nesting. This is a hack that can probably be fixed
-// with some better Typescript type definition knowledge.
-
-type DeepNestedObjectType = Record<
-  string,
-  | (boolean | null | number | ObjectType | string)[]
-  | boolean
-  | null
-  | number
+// Recursive JSON type: https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#more-recursive-type-aliases
+export type Json =
   | string
->;
-
-type NestedObjectType = Record<
-  string,
-  | (boolean | null | number | ObjectType | string)[]
-  | boolean
-  | DeepNestedObjectType
-  | null
   | number
-  | string
->;
-
-type ObjectType = Record<
-  string,
-  | (boolean | null | number | ObjectType | string)[]
-  | boolean
-  | NestedObjectType
-  | null
-  | number
-  | string
->;
-
-export type ItemType =
-  | (boolean | null | number | ObjectType | string)[]
   | boolean
   | null
-  | number
-  | ObjectType
-  | string;
+  | Json[]
+  | { [key: string]: Json }
 
-export type StoreType = Record<string, ItemType>;
+export type StoreType = Record<string, Json>;
 
 export interface ConfigParameters {
   projectName: string;
@@ -241,9 +205,9 @@ export default class Config {
    * Get a single item from the config store.
    *
    * @param {string} key The key to get from the config store.
-   * @returns {ItemType} A single ItemType item.
+   * @returns {Json} Json.
    */
-  get(key: string): ItemType {
+  get(key: string): Json {
     if (this.store && key in this.store) {
       return this.store[key];
     } else if (
@@ -259,18 +223,18 @@ export default class Config {
    * Set a single item into the config store.
    *
    * @param {string} key The key to write to the config store.
-   * @param {ItemType} value The value to write to the config store.
+   * @param {Json} value The value to write to the config store.
    * @returns {void} void.
    */
   set(
     key: string,
-    value: ItemType,
+    value: Json,
   ): void {
     const { store } = this;
 
     const innerSet = (
       key: string,
-      value: ItemType,
+      value: Json,
     ) => {
       store[key] = value;
     };
