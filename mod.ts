@@ -73,7 +73,7 @@ export default class Config {
 
   path: string;
 
-  constructor(options: ConfigParameters) {
+  constructor (options: ConfigParameters) {
     this._options = {
       ...this._options,
       ...options,
