@@ -5,7 +5,7 @@ import {
 
 import { existsSync } from "https://deno.land/std@0.97.0/fs/exists.ts";
 
-import envPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths/main/mod.ts";
+import envPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths/v1.0.0/mod.ts";
 
 const plainObject = () => Object.create(null);
 
