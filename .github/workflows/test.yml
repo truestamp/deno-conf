@@ -2,7 +2,7 @@ name: Test CI
 on: [push, pull_request]
 jobs:
   build:
-    name: ${{ matrix.kind }} ${{ matrix.os }}
+    name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     strategy:
@@ -15,8 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup Deno
-        uses: denoland/setup-deno@main
+        uses: denoland/setup-deno@v1
         with:
-          deno-version: 1.x
+          deno-version: x.x.x
       - name: Tests
-        run: deno test --allow-env --allow-read --allow-write --unstable
+        run: deno task test
