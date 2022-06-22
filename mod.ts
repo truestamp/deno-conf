@@ -1,9 +1,9 @@
 import {
   dirname,
   resolve,
-} from "https://deno.land/std@0.133.0/path/mod.ts";
+} from "https://deno.land/std@0.144.0/path/mod.ts";
 
-import appPaths from "https://raw.githubusercontent.com/truestamp/deno-app-paths/v1.0.1/mod.ts";
+import { appPaths } from "https://raw.githubusercontent.com/truestamp/deno-app-paths/v1.1.0/mod.ts";
 
 const plainObject = () => Object.create(null);
 

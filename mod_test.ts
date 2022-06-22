@@ -2,7 +2,7 @@ import {
   assertEquals,
   assertStringIncludes,
   assertThrows,
-} from "https://deno.land/std@0.133.0/testing/asserts.ts";
+} from "https://deno.land/std@0.144.0/testing/asserts.ts";
 
 import Conf from "./mod.ts";
 import { ConfigParameters } from "./mod.ts";
@@ -104,7 +104,7 @@ Deno.test("the conf should be iterable", () => {
   let iterableSize = 0;
 
   // exercise the iterable
-  for (const item of conf) {
+  for (const _item of conf) {
     iterableSize += 1;
   }
 
@@ -445,7 +445,7 @@ Deno.test("reading an invalid config with 'resetInvalidConfig: false' should thr
       conf.get("foo");
     },
     Error,
-    "Unexpected token b in JSON at position 0",
+    "Unexpected token 'b', \"broken-json\" is not valid JSON",
   );
 
   cleanupTestConf(conf);
